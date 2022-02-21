@@ -75,9 +75,11 @@ renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setSize(innerWidth, innerHeight) //dimensioni finestra
 document.querySelector('.goldfish').appendChild(renderer.domElement)
 
+
 camera.position.x = -3
-camera.position.y = 10
+camera.position.y = 0
 camera.position.z = 150
+
 
 // Build Group
 
@@ -99,6 +101,30 @@ var fishCenter = []
   scene.add(fishCenter[i])
   }
   
+
+  //prova mouse
+
+  document.addEventListener('click', onClick, false)
+
+function onClick( event ) 
+{
+  
+  for(var i=0;i<n;i++){
+    swimPath[i] = fishes[i].swimPath([  //MOVIMENTI DEI PESCI // da fare tutto random
+      new THREE.Vector3(Math.random() * (60 - (-60)) -60, Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //bl
+      new THREE.Vector3(Math.random() * (60 - (-60)) -60, Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //l
+      new THREE.Vector3(Math.random() * (60 - (-60)) -60, Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //fl
+      new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //f
+      new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //fr
+      new THREE.Vector3(Math.random() * (60 - (-60)) -60, Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //r
+      new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //br
+      new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //b
+      new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75),
+
+    ])
+  }
+
+}
   
 
 
@@ -116,18 +142,18 @@ const offset = -1.5707963267948966 // fishObject.rotation.y initial rotation
 for(var i=0;i<n;i++){
   fishes[i].swim()
 }
-  
+
 
 
 
 function animate() {
   requestAnimationFrame(animate)
-  
+  speed = fishes[0].update().speed / 200000
   for(var i=0;i<n;i++){
     swimData = fishes[i].update()
  
 
-    speed = swimData.speed / 200000
+    
     wiggleValue = swimData.xRotation.x  
     
   
@@ -137,7 +163,8 @@ function animate() {
   
     // get the tangent to the curve
     tangent = swimPath[i].spline.getTangent(t)
-  
+    t = t >= 1 ? 0 : t += speed
+
     // Make sure x is negative at the very end of the path. Otherwise there is a frame where the fish is backwards
     if (tangent.x > 0 && tangent.y < 0.06712 && tangent.y > 0.06710) {
       tangent.x *= -1
@@ -154,11 +181,10 @@ function animate() {
     axis.crossVectors(up, tangent).normalize()
   
     fishObject[i].rotation.y = wiggleValue + offset 
-  
-    t = t >= 1 ? 0 : t += speed
-    
+        
       
   }
+  
  
    
   
@@ -167,6 +193,10 @@ function animate() {
 }
 animate()
 
+
+
+
+
 function toRadians(angle) {
   return angle * (Math.PI / 180)
 }
@@ -174,5 +204,8 @@ function toRadians(angle) {
 function toDegrees(angle) {
   return angle * (180 / Math.PI)
 }
+
+
+
 
 })()

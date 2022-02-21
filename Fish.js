@@ -98,7 +98,7 @@ class Fish {
 
 
     geometry = new THREE.LatheGeometry(points, 50)
-    material = new THREE.MeshLambertMaterial({ color: 0xffffff })
+    material = new THREE.MeshLambertMaterial({ color: 0xffff00 }) //colore giallo
     var fishBody = new THREE.Mesh(geometry, material)
     fishBody.scale.x = .5
     fishBody.scale.z = .7
@@ -125,7 +125,7 @@ class Fish {
     }
 
     geometry = new THREE.LatheGeometry(points)
-    material = new THREE.MeshLambertMaterial({ color: 0x0000ff })
+    material = new THREE.MeshLambertMaterial({ color: 0x0000ff })//colore blu
     var fishTail = new THREE.Mesh(geometry, material)
 
     fishTail.rotation.z = 0.4
