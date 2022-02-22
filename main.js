@@ -102,8 +102,27 @@ var fishCenter = []
   }
   
 
-  //prova mouse
+  
+  
 
+
+// scene.add(swimPath.line)
+
+var t = 0
+var speed = 0.001
+var swimData
+var wiggleValue = 0
+
+
+const offset = -1.5707963267948966 // fishObject.rotation.y initial rotation
+
+
+for(var i=0;i<n;i++){
+  fishes[i].swim()
+}
+
+//prova mouse
+/*
   document.addEventListener('click', onClick, false)
 
 function onClick( event ) 
@@ -124,24 +143,57 @@ function onClick( event )
     ])
   }
 
-}
+}*/
+
+
+window.addEventListener("mousemove", onmousemove, false);
+
+
+var mouse = new THREE.Vector2();
+
+
+
+
+function onmousemove(event) {
+    // Update the mouse variable
+    event.preventDefault();
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    
+    speed = fishes[0].update().speed / 50000
+    for(var i=0;i<n;i++){
+      swimData = fishes[i].update()
+      
+      wiggleValue = mouse.x 
+          
+      // set the marker position
+      pt = swimPath[i].spline.getPoint(t)
+        
+      // get the tangent to the curve
+      tangent = swimPath[i].spline.getTangent(t)
+      t = t >= 1 ? 0 : t += speed
   
-
-
-// scene.add(swimPath.line)
-
-var t = 0
-var speed = 0.001
-var swimData
-var wiggleValue = 0
-
-
-const offset = -1.5707963267948966 // fishObject.rotation.y initial rotation
-
-
-for(var i=0;i<n;i++){
-  fishes[i].swim()
+      // Make sure x is negative at the very end of the path. Otherwise there is a frame where the fish is backwards
+      if (tangent.x > 0 && tangent.y < 0.06712 && tangent.y > 0.06710) {
+        tangent.x *= -1
+        tangent.z *= -1
+        tangent.y *= -1
+      }
+    
+      fishCenter[i].position.set(mouse.x, mouse.y, 0.5);
+     
+      fishCenter[i].lookAt(
+        mouse.x, mouse.y, 0.5
+      )
+    
+      // calculate the axis to rotate around
+     // axis.crossVectors(up, tangent).normalize()
+    
+     // fishObject[i].rotation.y = mouse.y 
+      } 
+        
 }
+
 
 
 
@@ -173,6 +225,7 @@ function animate() {
     }
   
     fishCenter[i].position.copy(pt)
+   
     fishCenter[i].lookAt(
       pt.add(new THREE.Vector3(tangent.x, tangent.y, tangent.z))
     )
@@ -192,6 +245,9 @@ function animate() {
   
 }
 animate()
+
+
+
 
 
 
