@@ -36,10 +36,6 @@
 
   }
 
-
-
-
-
   var scene = new THREE.Scene()
   // scene.background = new THREE.Color( 0x363129 )
   // scene.background = new THREE.Color( 0x363129 )
@@ -101,26 +97,21 @@
     scene.add(fishCenter[i])
   }
 
-
-
-
-
-
   // scene.add(swimPath.line)
 
   var t = 0
-  var speed = 0.001
+  var speed = 0.00001
   var swimData
   var wiggleValue = 0
 
 
   const offset = -1.5707963267948966 // fishObject.rotation.y initial rotation
 
-
+/*
   for (var i = 0; i < n; i++) {
     fishes[i].swim()
   }
-
+*/
   //prova mouse
   /*
     document.addEventListener('click', onClick, false)
@@ -145,38 +136,66 @@
   
   }*/
 
-
-
-
-
   var mouse = new THREE.Vector2();
-  var raycaster = new THREE.Raycaster();
-  function onmousemove(event) {
-   // cancelAnimationFrame(request)
-    // Update the mouse variable
-    event.preventDefault();
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-   
+
+  function onMouseMove(event) {
+      cancelAnimationFrame(request)
+      mouse.x = ( event.clientX / renderer.domElement.width ) * 2 - 1;
+      mouse.y = - ( event.clientY / renderer.domElement.height ) * 2 + 1;
+      
+      for(var i=0;i<n;i++){
+      swimPath[i] = fishes[i].swimPath([  //MOVIMENTI DEI PESCI 
+        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //bl
+        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //l
+        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //fl
+        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //f
+        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //fr
+        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //r
+        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //br
+        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //b
+        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75),
+      ])
+      pt = swimPath[i].spline.getPoint(t)
+      
+      fishCenter[i].position.copy(pt)
+      for(var i=0;i<n;i++){
+        swimPath[i] = fishes[i].swimPath([  //MOVIMENTI DEI PESCI // da fare tutto random
+          new THREE.Vector3(Math.random() * (60 - (-60)) -60, Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //bl
+          new THREE.Vector3(Math.random() * (60 - (-60)) -60, Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //l
+          new THREE.Vector3(Math.random() * (60 - (-60)) -60, Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //fl
+          new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //f
+          new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //fr
+          new THREE.Vector3(Math.random() * (60 - (-60)) -60, Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //r
+          new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //br
+          new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //b
+          new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75),
+    
+        ])
+      }
+    }
+    
       renderer.render(scene, camera)
+      animate()
+    
   }
-
-  window.addEventListener("mousemove", onmousemove, false);
-
-
+  window.addEventListener('mousemove', onMouseMove, false)
 
   function animate() {
+ 
     request=requestAnimationFrame(animate)
-    
-    speed = fishes[0].update().speed / 200000
+       
     for (var i = 0; i < n; i++) {
+      speed = Math.random()* 0.0001
       swimData = fishes[i].update()
-      wiggleValue = swimData.xRotation.x
+      
+     
       // set the marker position
       pt = swimPath[i].spline.getPoint(t)
+      
       // get the tangent to the curve
       tangent = swimPath[i].spline.getTangent(t)
       t = t >= 1 ? 0 : t += speed
+      
       // Make sure x is negative at the very end of the path. Otherwise there is a frame where the fish is backwards
       if (tangent.x > 0 && tangent.y < 0.06712 && tangent.y > 0.06710) {
         tangent.x *= -1
@@ -187,7 +206,7 @@
       
       fishCenter[i].lookAt(
         pt.add(new THREE.Vector3(mouse.x, mouse.y, tangent.z))
-      )/
+      )
       
       // calculate the axis to rotate around
       axis.crossVectors(up, tangent).normalize()
