@@ -139,55 +139,26 @@
   var mouse = new THREE.Vector2();
 
   function onMouseMove(event) {
-      cancelAnimationFrame(request)
       mouse.x = ( event.clientX / renderer.domElement.width ) * 2 - 1;
       mouse.y = - ( event.clientY / renderer.domElement.height ) * 2 + 1;
+
       
-      for(var i=0;i<n;i++){
-      swimPath[i] = fishes[i].swimPath([  //MOVIMENTI DEI PESCI 
-        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //bl
-        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //l
-        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //fl
-        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //f
-        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //fr
-        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //r
-        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //br
-        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75), //b
-        new THREE.Vector3(mouse.x * (60 - (-60)) - 60, mouse.y * (60 - (-60)) - 60, 0.5 * (130 - 75) + 75),
-      ])
-      pt = swimPath[i].spline.getPoint(t)
-      
-      fishCenter[i].position.copy(pt)
-      for(var i=0;i<n;i++){
-        swimPath[i] = fishes[i].swimPath([  //MOVIMENTI DEI PESCI // da fare tutto random
-          new THREE.Vector3(Math.random() * (60 - (-60)) -60, Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //bl
-          new THREE.Vector3(Math.random() * (60 - (-60)) -60, Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //l
-          new THREE.Vector3(Math.random() * (60 - (-60)) -60, Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //fl
-          new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //f
-          new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //fr
-          new THREE.Vector3(Math.random() * (60 - (-60)) -60, Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //r
-          new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //br
-          new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75), //b
-          new THREE.Vector3(Math.random() * (60 - (-60)) -60 , Math.random() * (60 - (-60)) -60, Math.random() * (130 - 75) +75),
+    renderer.render(scene, camera)
     
-        ])
-      }
     }
-    
-      renderer.render(scene, camera)
-      animate()
-    
-  }
+         
+  
   window.addEventListener('mousemove', onMouseMove, false)
 
   function animate() {
- 
+    
     request=requestAnimationFrame(animate)
-       
+      
+  
     for (var i = 0; i < n; i++) {
       speed = Math.random()* 0.0001
       swimData = fishes[i].update()
-      
+     
      
       // set the marker position
       pt = swimPath[i].spline.getPoint(t)
@@ -202,6 +173,7 @@
         tangent.z *= -1
         tangent.y *= -1
       }
+
       fishCenter[i].position.copy(pt)
       
       fishCenter[i].lookAt(
@@ -211,7 +183,9 @@
       // calculate the axis to rotate around
       axis.crossVectors(up, tangent).normalize()
       fishObject[i].rotation.y = wiggleValue + offset
+     
     }
+  
 
     renderer.render(scene, camera)
 
