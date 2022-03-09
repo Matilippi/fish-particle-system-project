@@ -2,7 +2,8 @@
 
   var fishes = []
   var swimPath = []
-  var n = 10;  //fra pesci random
+  var swimPathLinear = []
+  var n = 50;  //fra pesci random
 
   for (var i = 0; i < n; i++) {
 
@@ -85,7 +86,7 @@
 
   for (var i = 0; i < n; i++) {
 
-    var sizeFish = 0.08//Math.random() * (0. - 0.05) + 0.05;//pesci dmensione random tra 0.3 e 0.05
+    var sizeFish = Math.random() * (0.05 - 0.2) + 0.2;//pesci dmensione random tra 0.3 e 0.05
     fishObject[i] = fishes[i].getFish()
     fishObject[i].scale.set(sizeFish, sizeFish, sizeFish)
     fishObject[i].rotation.set(i, -i - Math.PI / 2, i)
@@ -100,7 +101,7 @@
   // scene.add(swimPath.line)
 
   var t = 0
-  var speed = 0.00001
+  var speed = 0.0000001
   var swimData
   var wiggleValue = 0
 
@@ -139,9 +140,11 @@
   var mouse = new THREE.Vector2();
 
   function onMouseMove(event) {
+ 
       mouse.x = ( event.clientX / renderer.domElement.width ) * 2 - 1;
       mouse.y = - ( event.clientY / renderer.domElement.height ) * 2 + 1;
 
+     
       
     renderer.render(scene, camera)
     
@@ -150,16 +153,18 @@
   
   window.addEventListener('mousemove', onMouseMove, false)
 
+
+ 
+
   function animate() {
-    
     request=requestAnimationFrame(animate)
-      
-  
+
     for (var i = 0; i < n; i++) {
-      speed = Math.random()* 0.0001
-      swimData = fishes[i].update()
-     
-     
+      
+      speed = Math.random()* 0.00001
+      
+      //swimData = fishes[i].update()
+          
       // set the marker position
       pt = swimPath[i].spline.getPoint(t)
       
@@ -173,21 +178,35 @@
         tangent.z *= -1
         tangent.y *= -1
       }
+    
+     // 
 
-      fishCenter[i].position.copy(pt)
+     fishCenter[i].position.set(mouse.x*100,mouse.y*100,100)
+
+     // fishCenter[i].position.copy(pt)
       
       fishCenter[i].lookAt(
         pt.add(new THREE.Vector3(mouse.x, mouse.y, tangent.z))
       )
       
+
+
       // calculate the axis to rotate around
       axis.crossVectors(up, tangent).normalize()
       fishObject[i].rotation.y = wiggleValue + offset
-     
+   
+  /*
+      
+      fisheCenter[i].position.copy(shift);
+      fishCenter[i].lookAt(
+        pt.add(new THREE.Vector3(mouse.x, mouse.y, tangent.z))
+      )
+      */
     }
-  
 
     renderer.render(scene, camera)
+
+    
 
   }
   animate()
