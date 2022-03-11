@@ -3,7 +3,7 @@
   var fishes = []
   var swimPath = []
   var swimPathLinear = []
-  var n = 50;  //fra pesci random
+  var n = 30;  //fra pesci random
 
   for (var i = 0; i < n; i++) {
 
@@ -20,8 +20,8 @@
       new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75),
 
     ])
-
-    /*
+ 
+    /*  
     swimPath[i] = fishes[i].swimPath[  //MOVIMENTI DEI PESCI // da fare tutto random
       new THREE.Vector3(-17-i, 16+i, 90+i), //bl
       new THREE.Vector3(-20-i , 15+i, 98+i), //l
@@ -138,13 +138,21 @@
   }*/
 
   var mouse = new THREE.Vector2();
+  var mouseonMove = false
 
   function onMouseMove(event) {
+    mouseonMove = true;
  
       mouse.x = ( event.clientX / renderer.domElement.width ) * 2 - 1;
       mouse.y = - ( event.clientY / renderer.domElement.height ) * 2 + 1;
+      if(event.clientY <= 0 || event.clientX <= 0 || (event.clientX >= window.innerWidth || event.clientY >= window.innerHeight))
+  {
+    mouseonMove = false;
 
-     
+    console.log('il mouse si muove? ',mouseonMove)
+
+  }
+
       
     renderer.render(scene, camera)
     
@@ -161,7 +169,7 @@
 
     for (var i = 0; i < n; i++) {
       
-      speed = Math.random()* 0.00001
+      speed = Math.random()* 0.00003
       
       //swimData = fishes[i].update()
           
@@ -181,9 +189,14 @@
     
      // 
 
-     fishCenter[i].position.set(mouse.x*100,mouse.y*100,100)
+      fishCenter[i].position.copy(pt)
 
-     // fishCenter[i].position.copy(pt)
+      if(mouseonMove){
+        fishCenter[i].position.copy(new THREE.Vector3(pt.x-(mouse.x)*(-100),pt.y-(mouse.y)*(-100),pt.z))
+      } else {
+        fishCenter[i].position.copy(pt)
+      }
+      
       
       fishCenter[i].lookAt(
         pt.add(new THREE.Vector3(mouse.x, mouse.y, tangent.z))
