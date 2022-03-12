@@ -2,12 +2,13 @@
 
   var fishes = []
   var swimPath = []
-  var swimPathLinear = []
+  
   var n = 30;  //fra pesci random
 
   for (var i = 0; i < n; i++) {
 
     fishes[i] = new Fish()
+    //fishes[i].getFish().color.setHex( Math.random() * 0xffffff );
     swimPath[i] = fishes[i].swimPath([  //MOVIMENTI DEI PESCI // da fare tutto random
       new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75), //bl
       new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75), //l
@@ -84,6 +85,8 @@
   var fishCenter = []
 
 
+
+
   for (var i = 0; i < n; i++) {
 
     var sizeFish = Math.random() * (0.05 - 0.2) + 0.2;//pesci dmensione random tra 0.3 e 0.05
@@ -139,6 +142,21 @@
 
   var mouse = new THREE.Vector2();
   var mouseonMove = false
+  var plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+var raycaster = new THREE.Raycaster();
+//var mouse = new THREE.Vector2();
+var intersectPoint = new THREE.Vector3();
+const geometry = new THREE.SphereGeometry( 5, 5, 0 );
+// Materials
+
+const material = new THREE.MeshBasicMaterial()
+
+material.color = new THREE.Color(0xffff00)
+
+const sphere = new THREE.Mesh( geometry, material );
+
+
+scene.add( sphere );
 
   function onMouseMove(event) {
     mouseonMove = true;
@@ -152,21 +170,56 @@
     console.log('il mouse si muove? ',mouseonMove)
 
   }
+  
+  
+  var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+  vector.unproject( camera );
+  var dir = vector.sub( camera.position ).normalize();
+  var distance = - camera.position.z / dir.z;
+  var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
+  sphere.position.copy(pos);
+       
+  renderer.render(scene, camera)
+    
+  }
+         
+  
+  window.addEventListener('mousemove', onMouseMove, false)
+/*
+  function onClick(event) {
+   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        
+      //aggiungo la sfera da attaccare al mouse
+        // Objects
 
+          const geometry = new THREE.SphereGeometry( 5, 5, 0 );
+          // Materials
+
+          const material = new THREE.MeshBasicMaterial()
+
+          material.color = new THREE.Color(0xffff00)
+
+          const sphere = new THREE.Mesh( geometry, material );
+          var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+          vector.unproject( camera );
+          var dir = vector.sub( camera.position ).normalize();
+          var distance = - camera.position.z / dir.z;
+          var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
+          sphere.position.copy(pos);
+
+          scene.add( sphere );
+   
       
     renderer.render(scene, camera)
     
     }
-         
-  
-  window.addEventListener('mousemove', onMouseMove, false)
-
-
+    window.addEventListener('click', onClick, true)
  
-
+*/
   function animate() {
     request=requestAnimationFrame(animate)
-
+    
     for (var i = 0; i < n; i++) {
       
       speed = Math.random()* 0.00003
@@ -192,15 +245,23 @@
       fishCenter[i].position.copy(pt)
 
       if(mouseonMove){
-        fishCenter[i].position.copy(new THREE.Vector3(pt.x-(mouse.x)*(-100),pt.y-(mouse.y)*(-100),pt.z))
+        var vector = new THREE.Vector3(mouse.x, mouse.y, 100);
+        vector.unproject( camera );
+        var dir = vector.sub( camera.position ).normalize();
+        var distance = - camera.position.z / dir.z;
+        var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
+        
+        fishCenter[i].position.copy(new THREE.Vector3(pt.x-(mouse.x)*(-50),pt.y-(mouse.y)*(-30),pt.z))
+        fishCenter[i].lookAt(pos)
+        
       } else {
+        
         fishCenter[i].position.copy(pt)
+        fishCenter[i].lookAt(
+          pt.add(new THREE.Vector3(tangent.x, tangent.y, tangent.z))
+        )
       }
       
-      
-      fishCenter[i].lookAt(
-        pt.add(new THREE.Vector3(mouse.x, mouse.y, tangent.z))
-      )
       
 
 
