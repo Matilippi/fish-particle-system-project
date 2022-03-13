@@ -2,12 +2,13 @@
 
   var fishes = []
   var swimPath = []
-  var swimPathLinear = []
+  
   var n = 30;  //fra pesci random
 
   for (var i = 0; i < n; i++) {
 
     fishes[i] = new Fish()
+    //fishes[i].getFish().color.setHex( Math.random() * 0xffffff );
     swimPath[i] = fishes[i].swimPath([  //MOVIMENTI DEI PESCI // da fare tutto random
       new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75), //bl
       new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75), //l
@@ -40,7 +41,7 @@
   var scene = new THREE.Scene()
   // scene.background = new THREE.Color( 0x363129 )
   // scene.background = new THREE.Color( 0x363129 )
-  var camera = new THREE.PerspectiveCamera(80, 320 / 150, .1, 250)
+  var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000 )
   var renderer = new THREE.WebGLRenderer({ alpha: true })
   var request;
   renderer.shadowMapEnabled = true;
@@ -69,7 +70,7 @@
   // scene.add( helper );
 
   renderer.setPixelRatio(window.devicePixelRatio)
-  renderer.setSize(innerWidth, innerHeight) //dimensioni finestra
+  renderer.setSize( window.innerWidth, window.innerHeight ) //dimensioni finestra
   document.querySelector('.goldfish').appendChild(renderer.domElement)
 
 
@@ -82,6 +83,8 @@
 
   var fishObject = []
   var fishCenter = []
+
+
 
 
   for (var i = 0; i < n; i++) {
@@ -140,6 +143,18 @@
   var mouse = new THREE.Vector2();
   var mouseonMove = false
 
+const geometry = new THREE.SphereGeometry( 5, 5, 5 );
+// Materials
+
+const material = new THREE.MeshBasicMaterial()
+
+material.color = new THREE.Color(0xffff00)
+
+const sphere = new THREE.Mesh( geometry, material );
+
+
+//scene.add( sphere );
+
   function onMouseMove(event) {
     mouseonMove = true;
  
@@ -152,21 +167,52 @@
     console.log('il mouse si muove? ',mouseonMove)
 
   }
-
+  
+  
+  var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+  vector.unproject( camera );
+  var dir = vector.sub( camera.position ).normalize();
+  var distance = - camera.position.z / dir.z;
+  var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
+  sphere.position.copy(pos);
+       
+  renderer.render(scene, camera)
+    
+  }
+         
+  
+  window.addEventListener('mousemove', onMouseMove, false)
+  var isPresentSphere = false;
+  function onClick(event) {
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        
+      //aggiungo la sfera da attaccare al mouse
+          var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+          vector.unproject( camera );
+          var dir = vector.sub( camera.position ).normalize();
+          var distance = - camera.position.z / dir.z;
+          var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
+          sphere.position.copy(pos);
+          if(!isPresentSphere){
+            scene.add( sphere );
+            isPresentSphere=true;
+          }else{
+            scene.remove(sphere)
+            isPresentSphere = false;
+          }
+          
+   
       
     renderer.render(scene, camera)
     
     }
-         
-  
-  window.addEventListener('mousemove', onMouseMove, false)
-
-
+    window.addEventListener('click', onClick, true)
  
 
   function animate() {
     request=requestAnimationFrame(animate)
-
+    
     for (var i = 0; i < n; i++) {
       
       speed = Math.random()* 0.00003
@@ -189,19 +235,30 @@
     
      // 
 
-      fishCenter[i].position.copy(pt)
+    // fishCenter[i].position.copy(pt)
 
-      if(mouseonMove){
-        fishCenter[i].position.copy(new THREE.Vector3(pt.x-(mouse.x)*(-100),pt.y-(mouse.y)*(-100),pt.z))
+      if(isPresentSphere){
+        var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
+        vector.unproject( camera );
+        var dir = vector.sub( camera.position ).normalize();
+        var distance = - camera.position.z / dir.z;
+        var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
+       
+
+        fishCenter[i].position.copy(new THREE.Vector3(pt.x-(mouse.x)*(-50),pt.y-(mouse.y)*(-30),0))
+        fishCenter[i].lookAt(pos)
+        if(fishCenter[i].position.x==mouse.x+2 || fishCenter[i].position.x==mouse.x-2 ){//questo metodo non funziona, cioè se va sulla sfera un pesce, la sfera viene tolta.
+          scene.remove(sphere)
+          isPresentSphere=false
+        }
       } else {
-        fishCenter[i].position.copy(pt)
+        
+        fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,0.5))
+        fishCenter[i].lookAt(
+          pt.add(new THREE.Vector3(pt.x,pt.y, 100))
+        )
       }
-      
-      
-      fishCenter[i].lookAt(
-        pt.add(new THREE.Vector3(mouse.x, mouse.y, tangent.z))
-      )
-      
+       
 
 
       // calculate the axis to rotate around

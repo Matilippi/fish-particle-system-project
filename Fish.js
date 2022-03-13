@@ -17,7 +17,7 @@ class Fish {
     this.isWiggling = false
     this.wigglesToDo = 0
     this.xRotation = { x: 0 }
-
+  
     this.INTERVAL = 1000
     this.INERTIA = 0.012
     this.WIGGLE_DURATION = 1000
@@ -98,7 +98,7 @@ class Fish {
 
 
     geometry = new THREE.LatheGeometry(points, 50)
-    material = new THREE.MeshLambertMaterial({ color: 0xffff00 }) //colore giallo
+    material = new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff }) //colore giallo
     var fishBody = new THREE.Mesh(geometry, material)
     fishBody.scale.x = .5
     fishBody.scale.z = .7
@@ -221,7 +221,26 @@ class Fish {
       spline
     }
   }
+/*
+  //aggiungo swimpathlineare
+  swimPathLinear(arr2) {
+    var line2 = new THREE.LineCurve3(arr2)
 
+    var material = new THREE.LineBasicMaterial({
+      color: 0xff00f0
+    })
+
+    var geometry = new THREE.Geometry()
+    for (var i = 0; i < line2.getPoints(100).length; i++) {
+      geometry.vertices.push(line.getPoints(100)[i])
+    }
+
+    return {
+      line: new THREE.Line(geometry, material),
+      line2
+    }
+  }
+*/
   update() {
     const { PUSH, MIN_SPEED, MAX_SPEED, INERTIA } = this
     // Slow Down
