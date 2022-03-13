@@ -41,7 +41,7 @@
   var scene = new THREE.Scene()
   // scene.background = new THREE.Color( 0x363129 )
   // scene.background = new THREE.Color( 0x363129 )
-  var camera = new THREE.PerspectiveCamera(80, 320 / 150, .1, 250)
+  var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000 )
   var renderer = new THREE.WebGLRenderer({ alpha: true })
   var request;
   renderer.shadowMapEnabled = true;
@@ -70,7 +70,7 @@
   // scene.add( helper );
 
   renderer.setPixelRatio(window.devicePixelRatio)
-  renderer.setSize(innerWidth, innerHeight) //dimensioni finestra
+  renderer.setSize( window.innerWidth, window.innerHeight ) //dimensioni finestra
   document.querySelector('.goldfish').appendChild(renderer.domElement)
 
 
@@ -142,11 +142,8 @@
 
   var mouse = new THREE.Vector2();
   var mouseonMove = false
-  var plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-var raycaster = new THREE.Raycaster();
-//var mouse = new THREE.Vector2();
-var intersectPoint = new THREE.Vector3();
-const geometry = new THREE.SphereGeometry( 5, 5, 0 );
+
+const geometry = new THREE.SphereGeometry( 5, 5, 5 );
 // Materials
 
 const material = new THREE.MeshBasicMaterial()
@@ -156,7 +153,7 @@ material.color = new THREE.Color(0xffff00)
 const sphere = new THREE.Mesh( geometry, material );
 
 
-scene.add( sphere );
+//scene.add( sphere );
 
   function onMouseMove(event) {
     mouseonMove = true;
@@ -185,30 +182,26 @@ scene.add( sphere );
          
   
   window.addEventListener('mousemove', onMouseMove, false)
-/*
+  var isPresentSphere = false;
   function onClick(event) {
-   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
         
       //aggiungo la sfera da attaccare al mouse
-        // Objects
-
-          const geometry = new THREE.SphereGeometry( 5, 5, 0 );
-          // Materials
-
-          const material = new THREE.MeshBasicMaterial()
-
-          material.color = new THREE.Color(0xffff00)
-
-          const sphere = new THREE.Mesh( geometry, material );
           var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
           vector.unproject( camera );
           var dir = vector.sub( camera.position ).normalize();
           var distance = - camera.position.z / dir.z;
           var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
           sphere.position.copy(pos);
-
-          scene.add( sphere );
+          if(!isPresentSphere){
+            scene.add( sphere );
+            isPresentSphere=true;
+          }else{
+            scene.remove(sphere)
+            isPresentSphere = false;
+          }
+          
    
       
     renderer.render(scene, camera)
@@ -216,7 +209,7 @@ mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     }
     window.addEventListener('click', onClick, true)
  
-*/
+
   function animate() {
     request=requestAnimationFrame(animate)
     
@@ -242,27 +235,30 @@ mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     
      // 
 
-      fishCenter[i].position.copy(pt)
+    // fishCenter[i].position.copy(pt)
 
-      if(mouseonMove){
-        var vector = new THREE.Vector3(mouse.x, mouse.y, 100);
+      if(isPresentSphere){
+        var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
         vector.unproject( camera );
         var dir = vector.sub( camera.position ).normalize();
         var distance = - camera.position.z / dir.z;
         var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
-        
-        fishCenter[i].position.copy(new THREE.Vector3(pt.x-(mouse.x)*(-50),pt.y-(mouse.y)*(-30),pt.z))
+       
+
+        fishCenter[i].position.copy(new THREE.Vector3(pt.x-(mouse.x)*(-50),pt.y-(mouse.y)*(-30),0))
         fishCenter[i].lookAt(pos)
-        
+        if(fishCenter[i].position.x==mouse.x+2 || fishCenter[i].position.x==mouse.x-2 ){//questo metodo non funziona, cioè se va sulla sfera un pesce, la sfera viene tolta.
+          scene.remove(sphere)
+          isPresentSphere=false
+        }
       } else {
         
-        fishCenter[i].position.copy(pt)
+        fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,0.5))
         fishCenter[i].lookAt(
-          pt.add(new THREE.Vector3(tangent.x, tangent.y, tangent.z))
+          pt.add(new THREE.Vector3(pt.x,pt.y, 100))
         )
       }
-      
-      
+       
 
 
       // calculate the axis to rotate around
