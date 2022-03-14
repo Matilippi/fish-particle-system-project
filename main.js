@@ -3,22 +3,22 @@
   var fishes = []
   var swimPath = []
   
-  var n = 30;  //fra pesci random
+  var n = 80;  //fra pesci random
 
   for (var i = 0; i < n; i++) {
 
     fishes[i] = new Fish()
     //fishes[i].getFish().color.setHex( Math.random() * 0xffffff );
     swimPath[i] = fishes[i].swimPath([  //MOVIMENTI DEI PESCI // da fare tutto random
-      new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75), //bl
-      new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75), //l
-      new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75), //fl
-      new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75), //f
-      new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75), //fr
-      new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75), //r
-      new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75), //br
-      new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75), //b
-      new THREE.Vector3(Math.random() * (60 - (-60)) - 60, Math.random() * (60 - (-60)) - 60, Math.random() * (130 - 75) + 75),
+      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, 0), //bl
+      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, 0), //l
+      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, 0), //fl
+      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, 0), //f
+      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, 0), //fr
+      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, 0), //r
+      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, 0), //br
+      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, 0), //b
+      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, 0),
 
     ])
  
@@ -143,7 +143,7 @@
   var mouse = new THREE.Vector2();
   var mouseonMove = false
 
-const geometry = new THREE.SphereGeometry( 5, 5, 5 );
+const geometry = new THREE.SphereGeometry( 3, 3, 0 );
 // Materials
 
 const material = new THREE.MeshBasicMaterial()
@@ -156,18 +156,11 @@ const sphere = new THREE.Mesh( geometry, material );
 //scene.add( sphere );
 
   function onMouseMove(event) {
-    mouseonMove = true;
+   
  
       mouse.x = ( event.clientX / renderer.domElement.width ) * 2 - 1;
       mouse.y = - ( event.clientY / renderer.domElement.height ) * 2 + 1;
-      if(event.clientY <= 0 || event.clientX <= 0 || (event.clientX >= window.innerWidth || event.clientY >= window.innerHeight))
-  {
-    mouseonMove = false;
-
-    console.log('il mouse si muove? ',mouseonMove)
-
-  }
-  
+     
   
   var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
   vector.unproject( camera );
@@ -175,7 +168,12 @@ const sphere = new THREE.Mesh( geometry, material );
   var distance = - camera.position.z / dir.z;
   var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
   sphere.position.copy(pos);
-       
+  if(Math.trunc(fishCenter[i].position.x)==Math.trunc(mouse.x) && Math.trunc(fishCenter[i].position.y)==Math.trunc(mouse.y) ){//se va sulla sfera un pesce, la sfera viene tolta.
+    scene.remove(sphere)
+    isPresentSphere=false
+    fishObject[i].scale.set(0.4, 0.4, 0.4)// il pesce che ha mangiato la sfera si è ingrossato
+   
+  }
   renderer.render(scene, camera)
     
   }
@@ -188,7 +186,7 @@ const sphere = new THREE.Mesh( geometry, material );
         mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
         
       //aggiungo la sfera da attaccare al mouse
-          var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+          var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
           vector.unproject( camera );
           var dir = vector.sub( camera.position ).normalize();
           var distance = - camera.position.z / dir.z;
@@ -201,7 +199,12 @@ const sphere = new THREE.Mesh( geometry, material );
             scene.remove(sphere)
             isPresentSphere = false;
           }
-          
+  if(Math.trunc(fishCenter[i].position.x)==Math.trunc(mouse.x) && Math.trunc(fishCenter[i].position.y)==Math.trunc(mouse.y) ){//se va sulla sfera un pesce, la sfera viene tolta.
+            scene.remove(sphere)
+            isPresentSphere=false
+            fishObject[i].scale.set(0.4, 0.4, 0.4)// il pesce che ha mangiato la sfera si è ingrossato
+           
+          }
    
       
     renderer.render(scene, camera)
@@ -215,7 +218,7 @@ const sphere = new THREE.Mesh( geometry, material );
     
     for (var i = 0; i < n; i++) {
       
-      speed = Math.random()* 0.00003
+      speed = Math.random()* 0.000009
       
       //swimData = fishes[i].update()
           
@@ -233,10 +236,7 @@ const sphere = new THREE.Mesh( geometry, material );
         tangent.y *= -1
       }
     
-     // 
-
-    // fishCenter[i].position.copy(pt)
-
+     
       if(isPresentSphere){
         var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
         vector.unproject( camera );
@@ -244,19 +244,19 @@ const sphere = new THREE.Mesh( geometry, material );
         var distance = - camera.position.z / dir.z;
         var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
        
-
         fishCenter[i].position.copy(new THREE.Vector3(pt.x-(mouse.x)*(-50),pt.y-(mouse.y)*(-30),0))
         fishCenter[i].lookAt(pos)
-        if(fishCenter[i].position.x==mouse.x+2 || fishCenter[i].position.x==mouse.x-2 ){//questo metodo non funziona, cioè se va sulla sfera un pesce, la sfera viene tolta.
+        
+        if(Math.trunc(fishCenter[i].position.x)==Math.trunc(sphere.position.x) && Math.trunc(fishCenter[i].position.y)==Math.trunc(sphere.position.y) ){//se va sulla sfera un pesce, la sfera viene tolta.
           scene.remove(sphere)
           isPresentSphere=false
+          fishObject[i].scale.set(0.4, 0.4, 0.4)// il pesce che ha mangiato la sfera si è ingrossato
+         
         }
       } else {
         
-        fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,0.5))
-        fishCenter[i].lookAt(
-          pt.add(new THREE.Vector3(pt.x,pt.y, 100))
-        )
+        fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,0))
+        fishCenter[i].lookAt(pt.add(new THREE.Vector3(tangent.x, tangent.y, tangent.z)))
       }
        
 
@@ -265,13 +265,7 @@ const sphere = new THREE.Mesh( geometry, material );
       axis.crossVectors(up, tangent).normalize()
       fishObject[i].rotation.y = wiggleValue + offset
    
-  /*
-      
-      fisheCenter[i].position.copy(shift);
-      fishCenter[i].lookAt(
-        pt.add(new THREE.Vector3(mouse.x, mouse.y, tangent.z))
-      )
-      */
+
     }
 
     renderer.render(scene, camera)
