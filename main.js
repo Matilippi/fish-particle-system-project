@@ -123,7 +123,7 @@ const sphere = new THREE.Mesh( geometry, material );
   var distance = - camera.position.z / dir.z;
   var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
   sphere.position.copy(pos);
-  if(Math.trunc(fishCenter[i].position.x)==Math.trunc(mouse.x) && Math.trunc(fishCenter[i].position.y)==Math.trunc(mouse.y) ){//se va sulla sfera un pesce, la sfera viene tolta.
+  if(Math.trunc(fishCenter[i]?.position.x)==Math.trunc(mouse.x) && Math.trunc(fishCenter[i]?.position.y)==Math.trunc(mouse.y) ){//se va sulla sfera un pesce, la sfera viene tolta.
     scene.remove(sphere)
     isPresentSphere=false
     fishObject[i].scale.set(0.4, 0.4, 0.4)// il pesce che ha mangiato la sfera si è ingrossato
@@ -154,7 +154,7 @@ const sphere = new THREE.Mesh( geometry, material );
             scene.remove(sphere)
             isPresentSphere = false;
           }
-          if(Math.trunc(fishCenter[i].position.x)==Math.trunc(mouse.x) && Math.trunc(fishCenter[i].position.y)==Math.trunc(mouse.y) ){//se va sulla sfera un pesce, la sfera viene tolta.
+          if(Math.trunc(fishCenter[i]?.position.x)==Math.trunc(mouse.x) && Math.trunc(fishCenter[i]?.position.y)==Math.trunc(mouse.y) ){//se va sulla sfera un pesce, la sfera viene tolta.
             scene.remove(sphere)
             isPresentSphere=false
             fishObject[i].scale.set(0.4, 0.4, 0.4)// il pesce che ha mangiato la sfera si è ingrossato
@@ -228,23 +228,6 @@ const sphere = new THREE.Mesh( geometry, material );
 
   }
   animate()
-
-
-
-
-
-
-
-
-  /* function toRadians(angle) {
-    return angle * (Math.PI / 180)
-  }
-
-  function toDegrees(angle) {
-    return angle * (180 / Math.PI)
-  } */
-
-
 
 
 })()
