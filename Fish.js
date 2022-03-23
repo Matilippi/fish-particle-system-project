@@ -157,7 +157,7 @@ class Fish {
     return fish
   }
 
-  swim() {
+  /* swim() {
     const { INTERVAL, MAX_WIGGLE_ROTATAION, WIGGLE_PROBABILITY, PUSH, MIN_SPEED, MAX_SPEED, RATE, WIGGLE_DURATION, INERTIA } = this
 
     const unsetIsWiggling = () => {
@@ -202,46 +202,26 @@ class Fish {
         }
       })
       .start()
-  }
+  } */
 
   swimPath(arr) {
     var spline = new THREE.SplineCurve3(arr)
 
-    var material = new THREE.LineBasicMaterial({
+    /* var material = new THREE.LineBasicMaterial({
       color: 0xff00f0
     })
 
-    var geometry = new THREE.Geometry()
-    for (var i = 0; i < spline.getPoints(100).length; i++) {
-      geometry.vertices.push(spline.getPoints(100)[i])
-    }
+    var geometry = new THREE.Geometry() */
+    /* for (var i = 0; i < spline.getPoints(10).length; i++) {
+      geometry.vertices.push(spline.getPoints(10)[i])
+    } */
 
     return {
-      line: new THREE.Line(geometry, material),
+      /* line: new THREE.Line(geometry, material), */
       spline
     }
   }
-/*
-  //aggiungo swimpathlineare
-  swimPathLinear(arr2) {
-    var line2 = new THREE.LineCurve3(arr2)
-
-    var material = new THREE.LineBasicMaterial({
-      color: 0xff00f0
-    })
-
-    var geometry = new THREE.Geometry()
-    for (var i = 0; i < line2.getPoints(100).length; i++) {
-      geometry.vertices.push(line.getPoints(100)[i])
-    }
-
-    return {
-      line: new THREE.Line(geometry, material),
-      line2
-    }
-  }
-*/
-  update() {
+  /* update() {
     const { PUSH, MIN_SPEED, MAX_SPEED, INERTIA } = this
     // Slow Down
     if (this.speed >= INERTIA + MIN_SPEED) {
@@ -259,5 +239,5 @@ class Fish {
 
     var { speed, isWiggling, wigglesToDo, xRotation } = this
     return { speed, isWiggling, wigglesToDo, xRotation }
-  }
+  } */
 }
