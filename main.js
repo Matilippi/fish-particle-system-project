@@ -24,14 +24,25 @@
   }
 
   var scene = new THREE.Scene()
-  var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000 )
+  scene.background = new THREE.Color('lightblue');
+  scene.fog = new THREE.Fog('lightblue', 1, 350);
+
+
+  {
+    const color = 'blue';
+    const intensity = 0.5;
+    const light = new THREE.DirectionalLight(color, intensity);
+    light.position.set(0, 0, 0);
+    scene.add(light);
+  }
+
+  var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500 )
   var renderer = new THREE.WebGLRenderer({ alpha: true })
-  var request;
   renderer.shadowMapEnabled = true;
 
   var up = new THREE.Vector3(0, 1, 0)
   var axis = new THREE.Vector3()
-  var pt, radians, axis, tangent
+  var pt, axis, tangent
 
   var light = new THREE.DirectionalLight(0xffffff, .4)
   light.position.set(20, 30, 130)
