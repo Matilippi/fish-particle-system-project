@@ -60,6 +60,9 @@
   var ambLight = new THREE.AmbientLight(0x404040, 2.2); // soft white light
   scene.add(ambLight);
 
+  const pointLight = new THREE.PointLight(  0xffffff, 7, 100 );
+  pointLight.position.set( 0, 100, 100 );
+  scene.add( pointLight );
 
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize( window.innerWidth, window.innerHeight ) //dimensioni finestra
@@ -104,10 +107,10 @@
 
 
 
-  var mouse = new THREE.Vector2();    
+  var mouse = new THREE.Vector2(); 
 
+//BREAD
 const geometry = new THREE.SphereGeometry( 3, 3, 0 );
-// Materials
 
 const material = new THREE.MeshBasicMaterial()
 
@@ -118,7 +121,7 @@ const sphere = new THREE.Mesh( geometry, material );
 
 
 
-  function onMouseMove(event) {
+function onMouseMove(event) {
    
  
     /* mouse.x = ( event.clientX / renderer.domElement.width ) * 2 - 1;
