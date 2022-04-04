@@ -3,8 +3,11 @@
   var fishes = []
   var swimPath = []
   
-  var n = 80;  //fra pesci random
-
+  var n = 200;  //fra pesci random
+ var small = 0.2
+ var medium = 0.5
+ var big = 0.8
+ var biggest = 1.1
   for (var i = 0; i < n; i++) {
 
     fishes[i] = new Fish()
@@ -84,7 +87,7 @@
 
   for (var i = 0; i < n; i++) {
 
-    var sizeFish = Math.random() * (0.05 - 0.2) + 0.2;//pesci dmensione random tra 0.3 e 0.05
+    var sizeFish = small;
     fishObject[i] = fishes[i].getFish()
     fishObject[i].scale.set(sizeFish, sizeFish, sizeFish)
     fishObject[i].rotation.set(i, -i - Math.PI / 2, i)
@@ -99,7 +102,6 @@
 
   var t = 0
   var speed = 0.0000001
-  var swimData
   var wiggleValue = 0
 
 
@@ -110,7 +112,8 @@
   var mouse = new THREE.Vector2(); 
 
 //BREAD
-const geometry = new THREE.SphereGeometry( 3, 3, 0 );
+const geometry = new THREE.BoxGeometry( 5, 5, Math.random()*10 );
+
 
 const material = new THREE.MeshBasicMaterial()
 
@@ -150,7 +153,6 @@ function onMouseMove(event) {
          
 
   window.addEventListener('mousemove', onMouseMove, false)
-  var isPresentSphere = false;
   function onClick(event) {
 
         click = click+1
@@ -201,7 +203,7 @@ function onMouseMove(event) {
     
     for (var i = 0; i < n; i++) {
       
-      speed = Math.random()* 0.000009
+      speed = Math.random()* 0.0000018
       
       for(var j=0; j<spheres.length;j++){
         if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[j].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[j].position.y))<30 ) 
@@ -241,11 +243,14 @@ function onMouseMove(event) {
             
               scene.remove(spheres[j])
               spheres.splice(j,1)//rimuove la sfera
-              
-              fishObject[i].scale.set(0.4, 0.4, 0.4)// il pesce che ha mangiato la sfera si è ingrossato
-            
-             // spheresDeleted[j]=true
-             // nSphere=nSphere-1;
+              if(fishObject[i].scale.x==small){
+                fishObject[i].scale.set(medium, medium, medium)
+              }else if(fishObject[i].scale.x==medium){
+                fishObject[i].scale.set(big, big, big)
+              }else if(fishObject[i].scale.x==big){
+                fishObject[i].scale.set(biggest, biggest, biggest)
+              }
+
               click=0;   
           }
                 
