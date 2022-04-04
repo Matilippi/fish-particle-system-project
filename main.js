@@ -3,7 +3,7 @@
   var fishes = []
   var swimPath = []
   
-  var n = 100;  //fra pesci random
+  var n = 80;  //fra pesci random
 
   for (var i = 0; i < n; i++) {
 
@@ -110,12 +110,13 @@
   var mouse = new THREE.Vector2(); 
 
 //BREAD
-const geometry = new THREE.SphereGeometry( 3, 3, Math.random*10 );//profondità della mollica varia
+const geometry = new THREE.SphereGeometry( 3, 3, 0 );
 
 const material = new THREE.MeshBasicMaterial()
 
 material.color = new THREE.Color(0xffff00)
 
+const sphere = new THREE.Mesh( geometry, material );
 
 var spheres = []
 var click = 0;
@@ -130,6 +131,7 @@ function onMouseMove(event) {
     mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
     mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
      
+
     if((click % 2) == 1){
        var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
         vector.unproject( camera );
@@ -140,6 +142,8 @@ function onMouseMove(event) {
         
     }
 
+
+
   renderer.render(scene, camera)
     
   }
@@ -147,14 +151,12 @@ function onMouseMove(event) {
 
   window.addEventListener('mousemove', onMouseMove, false)
   var isPresentSphere = false;
-  
-  
   function onClick(event) {
-    
+
         click = click+1
-       
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
       
 
         if((click % 2) == 1){
@@ -179,23 +181,20 @@ function onMouseMove(event) {
               }
                          
             }
-              
-            
+                          
         }else{
           spheres[spheres.length-1].position=new THREE.Vector3(mouse.x, mouse.y, 0);
         }
+
         
+      
    
       
     renderer.render(scene, camera)
     
     }
     window.addEventListener('click', onClick, true)
- /*
-    var spheresDeleted = []
-    for(var j=0; j<nSphere;j++){
-          spheresDeleted[j]=false
-    }*/
+
 
   function animate() {
     request=requestAnimationFrame(animate)
@@ -223,13 +222,17 @@ function onMouseMove(event) {
         tangent.z *= -1
         tangent.y *= -1
       }
+
       
       if(spheres.length!=0){
+
+ 
         var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
         vector.unproject( camera );
         var dir = vector.sub( camera.position ).normalize();
         var distance = - camera.position.z / dir.z;
         var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
+
         fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,pt.z))       
         
         for(var j=0; j<spheres.length;j++){
@@ -246,8 +249,10 @@ function onMouseMove(event) {
               click=0;   
           }
                 
+
         }
-      } else {       
+      } else {
+        
         fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,pt.z))
         fishCenter[i].lookAt(pt.add(new THREE.Vector3(tangent.x, tangent.y, tangent.z)))
       }
