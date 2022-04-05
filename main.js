@@ -3,7 +3,7 @@
   var fishes = []
   var swimPath = []
   
-  var n = 200;  //fra pesci random
+  var n = 100;  //fra pesci random
  var small = 0.2
  var medium = 0.5
  var big = 0.8
@@ -27,8 +27,8 @@
   }
 
   var scene = new THREE.Scene()
-  scene.background = new THREE.Color('lightblue');
-  scene.fog = new THREE.Fog('lightblue', 1, 350);
+  scene.background = new THREE.Color('#005e97');
+  scene.fog = new THREE.Fog('#005e97', 1, 350);
 
 
   {
@@ -66,6 +66,50 @@
   const pointLight = new THREE.PointLight(  0xffffff, 7, 100 );
   pointLight.position.set( 0, 100, 100 );
   scene.add( pointLight );
+
+    //WAVES EFFECT
+    var vertexHeight = 150,
+		planeDefinition = 100,
+		planeSize = 12450
+
+  var planeGeo = new THREE.PlaneGeometry(planeSize, planeSize, planeDefinition, planeDefinition);
+	var plane = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({
+		color:'white', 
+    /* opacity:0.9, */
+    transparent: true,
+	}));
+	plane.rotation.x -= -Math.PI * 0.4;
+  plane.position.set( 0, 150, 0 )
+
+	scene.add(plane);
+
+
+  updatePlane();
+
+	function updatePlane() {
+		for (var i = 0; i < planeGeo.vertices.length; i++) {
+      planeGeo.vertices[i].z += Math.random() * vertexHeight - vertexHeight;
+      planeGeo.vertices[i]._myZ = planeGeo.vertices[i].z
+		}
+	};
+
+  render();
+
+  var count = 0
+	function render() {
+		requestAnimationFrame(render);
+
+    for (var i = 0; i < planeGeo.vertices.length; i++) {
+      var z = +planeGeo.vertices[i].z;
+      planeGeo.vertices[i].z = Math.sin(( i + count * 0.00002)) * (planeGeo.vertices[i]._myZ - (planeGeo.vertices[i]._myZ* 0.6))
+      plane.geometry.verticesNeedUpdate = true;
+
+      count += 0.1
+    }
+
+		renderer.render(scene, camera);
+	}
+
 
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize( window.innerWidth, window.innerHeight ) //dimensioni finestra
@@ -203,7 +247,7 @@ function onMouseMove(event) {
     
     for (var i = 0; i < n; i++) {
       
-      speed = Math.random()* 0.0000018
+      speed = Math.random()* 0.000008
       
       for(var j=0; j<spheres.length;j++){
         if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[j].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[j].position.y))<30 ) 
