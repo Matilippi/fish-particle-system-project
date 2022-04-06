@@ -3,7 +3,7 @@
   var fishes = []
   var swimPath = []
   
-  var n = 100;  //fishes number
+  var n = 200;  //fishes number
 
   //different fish size
   var small = 0.2
@@ -25,7 +25,6 @@
       new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, Math.random() * (50 - (-50)) - 50), //br
       new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, Math.random() * (50 - (-50)) - 50), //b
       new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, Math.random() * (50 - (-50)) - 50),
-
     ])
 
   }
@@ -116,7 +115,7 @@
 		renderer.render(scene, camera);
 	}
 
-
+  
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize( window.innerWidth, window.innerHeight ) //dimensioni finestra
   document.querySelector('.goldfish').appendChild(renderer.domElement)
@@ -126,14 +125,10 @@
   camera.position.y = 0
   camera.position.z = 150
 
-
   // Build Fish group
 
   var fishObject = []
   var fishCenter = []
-
-
-
 
   for (var i = 0; i < n; i++) {
 
@@ -141,7 +136,6 @@
     fishObject[i] = fishes[i].getFish()
     fishObject[i].scale.set(sizeFish, sizeFish, sizeFish)
     fishObject[i].rotation.set(i, -i - Math.PI / 2, i)
-
     fishCenter[i] = new THREE.AxesHelper(200)
     fishCenter[i] = new THREE.Object3D()
     fishCenter[i].add(fishObject[i])
@@ -157,12 +151,10 @@
 
   const offset = -1.5707963267948966 // fishObject.rotation.y initial rotation
 
-
-
   var mouse = new THREE.Vector2(); 
 
   //Bread
-  const geometry = new THREE.BoxGeometry( 5, 5, Math.random()*10 );
+  const geometry = new THREE.SphereGeometry( 3, 3, 0 );
 
 
   const material = new THREE.MeshBasicMaterial()
@@ -172,13 +164,13 @@
   const sphere = new THREE.Mesh( geometry, material );
 
   var spheres = []
+  var spheres = []
   var click = 0;
-
+  var last = null;
+  var move = false;
 
   function onMouseMove(event) {
-    /* mouse.x = ( event.clientX / renderer.domElement.width ) * 2 - 1;
-    mouse.y = - ( event.clientY / renderer.domElement.height ) * 2 + 1; */
-
+    
     mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
     mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
      
@@ -189,25 +181,30 @@
         var distance = - camera.position.z / dir.z;
         var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
         spheres[spheres.length-1].position.copy(pos);
-        
+    }else if(last!=null){
+
+      last.position.copy(pos);
+      
     }
+   
+    
   renderer.render(scene, camera)
     
   }
-         
+       
 
   window.addEventListener('mousemove', onMouseMove, false)
   function onClick(event) {
 
+    //the first click create a new sphere, the second stop the sphere
     click = click+1
+    
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-  
-
+ 
     if((click % 2) == 1){
       spheres.push(new THREE.Mesh( geometry, material ));
-    //adding sphere
+      //adding sphere
       var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
       vector.unproject( camera );
       var dir = vector.sub( camera.position ).normalize();
@@ -215,21 +212,18 @@
       var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
       spheres[spheres.length-1].position.copy(pos);//ultima aggiunta         
       scene.add( spheres[spheres.length-1] );
-
+      move = false;
       //fishes look at near sphere
       for (var i = 0; i < n; i++) {
         if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[spheres.length-1].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[spheres.length-1].position.y))<30 ){
           fishCenter[i].lookAt(spheres[spheres.length-1].position)
         }            
-      }
-                          
+      }                   
     } else {
       spheres[spheres.length-1].position=new THREE.Vector3(mouse.x, mouse.y, 0);
-    }
-
-        
       
-   
+    }
+           
       
     renderer.render(scene, camera)
     
@@ -241,12 +235,11 @@
     request=requestAnimationFrame(animate)
     
     for (var i = 0; i < n; i++) {
-      
-      speed = Math.random()* 0.000008
+      //every fish has velocity random
+      speed = Math.random()* 0.000003
       
       for(var j=0; j<spheres.length;j++){
         if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[j].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[j].position.y))<30 ) 
-         
         fishCenter[i].lookAt(spheres[j].position)
       }
           
@@ -277,9 +270,11 @@
         for(var j=0; j<spheres.length;j++){
 
           if(Math.trunc(fishCenter[i].position.x)==Math.trunc(spheres[j].position.x) && Math.trunc(fishCenter[i].position.y)==Math.trunc(spheres[j].position.y)){//se va sulla sfera un pesce, la sfera viene tolta.                   
-            
+              
               scene.remove(spheres[j])
-              spheres.splice(j,1)//rimuove la sfera
+              last=spheres[length-2];
+              spheres.splice(j,1)//remove the sphere from list
+              //when fish eat become first medium until biggest.
               if(fishObject[i].scale.x==small){
                 fishObject[i].scale.set(medium, medium, medium)
               }else if(fishObject[i].scale.x==medium){
@@ -287,14 +282,12 @@
               }else if(fishObject[i].scale.x==big){
                 fishObject[i].scale.set(biggest, biggest, biggest)
               }
-
-              click=0;   
-          }
-                
+              click = 0;
+          } 
 
         }
       } else {
-        
+        //fishes look everywhere
         fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,pt.z))
         fishCenter[i].lookAt(pt.add(new THREE.Vector3(tangent.x, tangent.y, tangent.z)))
       }
