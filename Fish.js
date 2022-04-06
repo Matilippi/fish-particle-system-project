@@ -1,16 +1,3 @@
-var helpers = {
-  // Retun random integer between two numbers
-  randomInt: (min, max) => Math.floor(Math.random() * (max - min)) + min,
-
-  // Maybe do something
-  // probability: number between 0 and 1
-  maybe: (probability, callback) => {
-    if (Math.random() < probability) {
-      callback()
-    }
-  }
-}
-
 class Fish {
   constructor() {
     this.speed = 10
@@ -145,7 +132,6 @@ class Fish {
     fishTailBottom.scale.y = 1
 
     var fish = new THREE.Group()
-    // fish.add(fishHead)
     fish.add(fishEyeRight)
     fish.add(fishEyeLeft)
     fish.add(fishBody)
@@ -157,87 +143,10 @@ class Fish {
     return fish
   }
 
-  /* swim() {
-    const { INTERVAL, MAX_WIGGLE_ROTATAION, WIGGLE_PROBABILITY, PUSH, MIN_SPEED, MAX_SPEED, RATE, WIGGLE_DURATION, INERTIA } = this
-
-    const unsetIsWiggling = () => {
-      let interval = setInterval(() => {
-        --this.wigglesToDo
-        if (this.wigglesToDo == 0) {
-          this.isWiggling = false
-          clearInterval(interval)
-        }
-      }, WIGGLE_DURATION)
-    }
-
-    const setWiggle = () => {
-      this.wigglesToDo = helpers.randomInt(1, 6)
-      this.isWiggling = true
-      makeTween(MAX_WIGGLE_ROTATAION)
-
-      unsetIsWiggling()
-    }
-
-    // Every INTERVAL, if !isWiggling, maybe wiggle some
-    const maybeWiggle = setInterval(() => {
-      if (!this.isWiggling) {
-        helpers.maybe(WIGGLE_PROBABILITY, setWiggle)
-      }
-    }, INTERVAL)
-
-    const makeTween = (to) => new TWEEN.Tween(this.xRotation)
-      .to({ x: to }, WIGGLE_DURATION / 4)
-      .easing(TWEEN.Easing.Cubic.Out)
-      .onComplete(() => {
-        makeTweenBack(to)
-      })
-      .start()
-
-    const makeTweenBack = (to) => new TWEEN.Tween(this.xRotation)
-      .to({ x: 0 }, WIGGLE_DURATION / 4)
-      .easing(TWEEN.Easing.Quadratic.In)
-      .onComplete(() => {
-        if (this.isWiggling) {
-          makeTween(-to)
-        }
-      })
-      .start()
-  } */
-
   swimPath(arr) {
     var spline = new THREE.SplineCurve3(arr)
-
-    /* var material = new THREE.LineBasicMaterial({
-      color: 0xff00f0
-    })
-
-    var geometry = new THREE.Geometry() */
-    /* for (var i = 0; i < spline.getPoints(10).length; i++) {
-      geometry.vertices.push(spline.getPoints(10)[i])
-    } */
-
     return {
-      /* line: new THREE.Line(geometry, material), */
       spline
     }
   }
-  /* update() {
-    const { PUSH, MIN_SPEED, MAX_SPEED, INERTIA } = this
-    // Slow Down
-    if (this.speed >= INERTIA + MIN_SPEED) {
-      this.speed -= INERTIA
-    } else if (this.speed >= INERTIA) {
-      this.speed = MIN_SPEED
-    }
-
-    // Accelerate
-    if (this.isWiggling && this.speed + PUSH < MAX_SPEED) {
-      this.speed += PUSH
-    }
-
-    TWEEN.update()
-
-    var { speed, isWiggling, wigglesToDo, xRotation } = this
-    return { speed, isWiggling, wigglesToDo, xRotation }
-  } */
 }
