@@ -164,34 +164,23 @@
   const sphere = new THREE.Mesh( geometry, material );
 
   var spheres = []
-  var spheres = []
   var click = 0;
-  var last = null;
-  var move = false;
-
+  var SphereonMove = false;
+  var last = false;
+ 
   function onMouseMove(event) {
-    
     mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
     mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
-     
-    if((click % 2) == 1){
-       var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
-        vector.unproject( camera );
-        var dir = vector.sub( camera.position ).normalize();
-        var distance = - camera.position.z / dir.z;
-        var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
-        spheres[spheres.length-1].position.copy(pos);
-    }else if(last!=null){
-
-      last.position.copy(pos);
-      
+    var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
+    vector.unproject( camera );
+    var dir = vector.sub( camera.position ).normalize();
+    var distance = - camera.position.z / dir.z;
+    var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );  
+    if(SphereonMove && !last){
+      spheres[spheres.length-1].position.copy(pos);
     }
-   
-    
-  renderer.render(scene, camera)
-    
-  }
-       
+    renderer.render(scene, camera)
+  }     
 
   window.addEventListener('mousemove', onMouseMove, false)
   function onClick(event) {
@@ -203,6 +192,8 @@
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
  
     if((click % 2) == 1){
+      SphereonMove=true;
+      last = false;
       spheres.push(new THREE.Mesh( geometry, material ));
       //adding sphere
       var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
@@ -220,8 +211,8 @@
         }            
       }                   
     } else {
+      SphereonMove=false;
       spheres[spheres.length-1].position=new THREE.Vector3(mouse.x, mouse.y, 0);
-      
     }
            
       
@@ -237,7 +228,6 @@
     for (var i = 0; i < n; i++) {
       //every fish has velocity random
       speed = Math.random()* 0.000003
-      
       for(var j=0; j<spheres.length;j++){
         if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[j].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[j].position.y))<30 ) 
         fishCenter[i].lookAt(spheres[j].position)
@@ -268,11 +258,12 @@
         fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,pt.z))       
         
         for(var j=0; j<spheres.length;j++){
-
           if(Math.trunc(fishCenter[i].position.x)==Math.trunc(spheres[j].position.x) && Math.trunc(fishCenter[i].position.y)==Math.trunc(spheres[j].position.y)){//se va sulla sfera un pesce, la sfera viene tolta.                   
-              
               scene.remove(spheres[j])
-              last=spheres[length-2];
+              if(j==(spheres.length-1)){
+                last=true;
+                click=0;
+              }
               spheres.splice(j,1)//remove the sphere from list
               //when fish eat become first medium until biggest.
               if(fishObject[i].scale.x==small){
@@ -282,9 +273,7 @@
               }else if(fishObject[i].scale.x==big){
                 fishObject[i].scale.set(biggest, biggest, biggest)
               }
-              click = 0;
           } 
-
         }
       } else {
         //fishes look everywhere
