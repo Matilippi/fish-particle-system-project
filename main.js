@@ -100,6 +100,9 @@
 
   render();
 
+  //
+
+
   var count = 0
 	function render() {
 		requestAnimationFrame(render);
@@ -228,10 +231,7 @@
     for (var i = 0; i < n; i++) {
       //every fish has velocity random
       speed = Math.random()* 0.000003
-      for(var j=0; j<spheres.length;j++){
-        if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[j].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[j].position.y))<30 ) 
-        fishCenter[i].lookAt(spheres[j].position)
-      }
+      
           
       // set the marker position
       pt = swimPath[i].spline.getPoint(t)
@@ -247,6 +247,16 @@
         tangent.y *= -1
       }
 
+      for(var j=0; j<spheres.length;j++){
+        if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[j].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[j].position.y))<30 ){
+          fishCenter[i].lookAt(spheres[j].position)
+        }else{
+          fishCenter[i].lookAt(pt.add(new THREE.Vector3(tangent.x, tangent.y, tangent.z)))
+        }
+        
+      }
+
+
       // if there are spheres on scene 
       if(spheres.length!=0){
         var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
@@ -258,6 +268,8 @@
         fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,pt.z))       
         
         for(var j=0; j<spheres.length;j++){
+          if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[j].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[j].position.y))<30 )
+            fishCenter[i].lookAt(spheres[j].position)
           if(Math.trunc(fishCenter[i].position.x)==Math.trunc(spheres[j].position.x) && Math.trunc(fishCenter[i].position.y)==Math.trunc(spheres[j].position.y)){//se va sulla sfera un pesce, la sfera viene tolta.                   
               scene.remove(spheres[j])
               if(j==(spheres.length-1)){
