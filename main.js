@@ -167,11 +167,14 @@
   const sphere = new THREE.Mesh( geometry, material );
 
   var spheres = []
+
+  //Variables used for mouse click and mouse move control
   var click = 0;
   var SphereonMove = false;
   var last = false;
  
   function onMouseMove(event) {
+    //take mouse position
     mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
     mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
     var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
@@ -179,6 +182,8 @@
     var dir = vector.sub( camera.position ).normalize();
     var distance = - camera.position.z / dir.z;
     var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );  
+
+    //if the sphere is moving with the mouse and 
     if(SphereonMove && !last){
       spheres[spheres.length-1].position.copy(pos);
     }
