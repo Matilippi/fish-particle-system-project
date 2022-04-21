@@ -183,7 +183,7 @@
     var distance = - camera.position.z / dir.z;
     var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );  
 
-    //if the sphere is moving with the mouse and 
+    //if the sphere is moving follow the mouse
     if(SphereonMove && !last){
       spheres[spheres.length-1].position.copy(pos);
     }
@@ -217,7 +217,8 @@
         if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[spheres.length-1].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[spheres.length-1].position.y))<30 ){
           fishCenter[i].lookAt(spheres[spheres.length-1].position)
         }            
-      }                   
+      } 
+      //if the sphere stop moving take the mouse position                  
     } else {
       SphereonMove=false;
       spheres[spheres.length-1].position=new THREE.Vector3(mouse.x, mouse.y, 0);
@@ -251,7 +252,7 @@
         tangent.z *= -1
         tangent.y *= -1
       }
-
+      // if one fish is near ( absolute distance 50 for x and 30 for y) at one sphere, the fish look the sphere.
       for(var j=0; j<spheres.length;j++){
         if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[j].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[j].position.y))<30 ){
           fishCenter[i].lookAt(spheres[j].position)
@@ -270,13 +271,17 @@
         //var distance = - camera.position.z / dir.z;
         //var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
 
+
         fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,pt.z))       
         
         for(var j=0; j<spheres.length;j++){
+          //if one fish is near ( absolute distance 50 for x and 30 for y) at one sphere, the fish look the sphere.
           if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[j].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[j].position.y))<30 )
             fishCenter[i].lookAt(spheres[j].position)
-          if(Math.trunc(fishCenter[i].position.x)==Math.trunc(spheres[j].position.x) && Math.trunc(fishCenter[i].position.y)==Math.trunc(spheres[j].position.y)){//se va sulla sfera un pesce, la sfera viene tolta.                   
+           //if a fish is in the same position (x,y) of the spher    
+          if(Math.trunc(fishCenter[i].position.x)==Math.trunc(spheres[j].position.x) && Math.trunc(fishCenter[i].position.y)==Math.trunc(spheres[j].position.y)){              
               scene.remove(spheres[j])
+              //if the sphere eat by fish is the last insert
               if(j==(spheres.length-1)){
                 last=true;
                 click=0;
