@@ -13,20 +13,18 @@
 
   //fish swim path random
   for (var i = 0; i < n; i++) {
-
     fishes[i] = new Fish()
     swimPath[i] = fishes[i].swimPath([
-      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, Math.random() * (50 - (-50)) - 50), //bl
-      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, Math.random() * (50 - (-50)) - 50), //l
-      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, Math.random() * (50 - (-50)) - 50), //fl
-      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, Math.random() * (50 - (-50)) - 50), //f
-      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, Math.random() * (50 - (-50)) - 50), //fr
-      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, Math.random() * (50 - (-50)) - 50), //r
-      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, Math.random() * (50 - (-50)) - 50), //br
-      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, Math.random() * (50 - (-50)) - 50), //b
-      new THREE.Vector3(Math.random() * (150 - (-150)) - 150, Math.random() * (100 - (-100)) - 100, Math.random() * (50 - (-50)) - 50),
+      new THREE.Vector3(Math.random() * 300 - 150, Math.random() * 200 - 100, Math.random() * 100 - 50), 
+      new THREE.Vector3(Math.random() * 300 - 150, Math.random() * 200 - 100, Math.random() * 100 - 50), 
+      new THREE.Vector3(Math.random() * 300 - 150, Math.random() * 200 - 100, Math.random() * 100 - 50), 
+      new THREE.Vector3(Math.random() * 300 - 150, Math.random() * 200 - 100, Math.random() * 100 - 50), 
+      new THREE.Vector3(Math.random() * 300 - 150, Math.random() * 200 - 100, Math.random() * 100 - 50), 
+      new THREE.Vector3(Math.random() * 300 - 150, Math.random() * 200 - 100, Math.random() * 100 - 50), 
+      new THREE.Vector3(Math.random() * 300 - 150, Math.random() * 200 - 100, Math.random() * 100 - 50), 
+      new THREE.Vector3(Math.random() * 300 - 150, Math.random() * 200 - 100, Math.random() * 100 - 50), 
+      new THREE.Vector3(Math.random() * 300 - 150, Math.random() * 200 - 100, Math.random() * 100 - 50),
     ])
-
   }
 
   var scene = new THREE.Scene()
