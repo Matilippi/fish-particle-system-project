@@ -29,67 +29,50 @@
 
   var scene = new THREE.Scene()
   scene.background = new THREE.Color('#005e97');
+  var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500 )
+  var renderer = new THREE.WebGLRenderer()
+
+  renderer.setPixelRatio(window.devicePixelRatio)
+  renderer.setSize( window.innerWidth, window.innerHeight ) //dimensioni finestra
+  document.querySelector('.goldfish').appendChild(renderer.domElement)
+
+
+  camera.position.x = 0
+  camera.position.y = 0
+  camera.position.z = 150
 
   //Fog Effect
-  scene.fog = new THREE.Fog('#005e97', 1, 350);
+  scene.fog = new THREE.Fog('#005e97', 0, 300);
 
-  {
-    const color = 'blue';
-    const intensity = 0.5;
-    const light = new THREE.DirectionalLight(color, intensity);
-    light.position.set(0, 0, 0);
-    scene.add(light);
-  }
-
-  var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500 )
-  var renderer = new THREE.WebGLRenderer({ alpha: true })
-  renderer.shadowMapEnabled = true;
-
-  var up = new THREE.Vector3(0, 1, 0)
-  var axis = new THREE.Vector3()
-  var pt, axis, tangent
-
-  //Directional Light
-  var light = new THREE.DirectionalLight(0xffffff, .4)
-  light.position.set(20, 30, 130)
-  light.castShadow = true
-  light.shadowCameraNear = 20;
-  light.shadowCameraLeft = 50;
-  light.shadowCameraRight = -10;
-  light.shadowCameraTop = 100;
-  light.shadowCameraBottom = -20;
-  var lightTarget = new THREE.Object3D()
-  lightTarget.position.set(-55, 0, 100)
-  scene.add(lightTarget)
-  light.target = lightTarget
 
   var ambLight = new THREE.AmbientLight(0x404040, 2.2); // soft white light
   scene.add(ambLight);
 
   //Point light 
-  const pointLight = new THREE.PointLight(  0xffffff, 7, 100 );
+  const pointLight = new THREE.PointLight(0xffffff, 7, 100 );
   pointLight.position.set( 0, 100, 100 );
   scene.add( pointLight );
 
   //Waves Effect
-  var vertexHeight = 150,
-  planeDefinition = 100,
-  planeSize = 12450
+  var vertexHeight = 150, // number of verticle
+  planeDefinition = 100, //number of segment
+  planeSize = 10000
 
   var planeGeo = new THREE.PlaneGeometry(planeSize, planeSize, planeDefinition, planeDefinition);
 	var plane = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({
 		color:'white', 
     transparent: true,
+    /* wireframe: true */
 	}));
 	plane.rotation.x -= -Math.PI * 0.4;
   plane.position.set( 0, 150, 0 )
 
 	scene.add(plane);
 
+// set wave plane for each vertice
+  setWaves(); 
 
-  updatePlane();
-
-	function updatePlane() {
+	function setWaves() {
 		for (var i = 0; i < planeGeo.vertices.length; i++) {
       planeGeo.vertices[i].z += Math.random() * vertexHeight - vertexHeight;
       planeGeo.vertices[i]._myZ = planeGeo.vertices[i].z
@@ -98,33 +81,22 @@
 
   render();
 
-  //
-
-
   var count = 0
 	function render() {
 		requestAnimationFrame(render);
 
     for (var i = 0; i < planeGeo.vertices.length; i++) {
-      var z = +planeGeo.vertices[i].z;
+      /* var z = +planeGeo.vertices[i].z; */
       planeGeo.vertices[i].z = Math.sin(( i + count * 0.00002)) * (planeGeo.vertices[i]._myZ - (planeGeo.vertices[i]._myZ* 0.6))
-      plane.geometry.verticesNeedUpdate = true;
+      plane.geometry.verticesNeedUpdate = true; //recall renderer
 
-      count += 0.1
+      count += 0.2
     }
 
 		renderer.render(scene, camera);
 	}
 
   
-  renderer.setPixelRatio(window.devicePixelRatio)
-  renderer.setSize( window.innerWidth, window.innerHeight ) //dimensioni finestra
-  document.querySelector('.goldfish').appendChild(renderer.domElement)
-
-
-  camera.position.x = -3
-  camera.position.y = 0
-  camera.position.z = 150
 
   // Build Fish group
 
@@ -137,7 +109,6 @@
     fishObject[i] = fishes[i].getFish()
     fishObject[i].scale.set(sizeFish, sizeFish, sizeFish)
     fishObject[i].rotation.set(i, -i - Math.PI / 2, i)
-    fishCenter[i] = new THREE.AxesHelper(200)
     fishCenter[i] = new THREE.Object3D()
     fishCenter[i].add(fishObject[i])
     scene.add(fishCenter[i])
@@ -223,9 +194,12 @@
     }
     window.addEventListener('click', onClick, true)
 
+    var up = new THREE.Vector3(0, 1, 0) 
+    var axis = new THREE.Vector3()
+    var pt, axis, tangent
 
   function animate() {
-    request=requestAnimationFrame(animate)
+    requestAnimationFrame(animate)
     
     for (var i = 0; i < n; i++) {
       //every fish has velocity random

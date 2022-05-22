@@ -1,20 +1,4 @@
 class Fish {
-  constructor() {
-    this.speed = 10
-    this.isWiggling = false
-    this.wigglesToDo = 0
-    this.xRotation = { x: 0 }
-  
-    this.INTERVAL = 1000
-    this.INERTIA = 0.012
-    this.WIGGLE_DURATION = 1000
-    this.RATE = 16
-    this.MAX_SPEED = 10
-    this.MIN_SPEED = 5
-    this.PUSH = 0.02
-    this.WIGGLE_PROBABILITY = 0.3
-    this.MAX_WIGGLE_ROTATAION = 0.12
-  }
 
   getFish() {
     var geometry, material
@@ -45,10 +29,10 @@ class Fish {
     // Body
     var points = []
     var WIDTH = 21
-    var CURVE_FASTNESS = 0.9
-    var POS_FROM_HEAD = 10
+    var CURVE_FASTNESS = 0.9 
+    var POS_FROM_HEAD = 10 
     var STRETCH = 15
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 3; i++) { 
       points.push(
         new THREE.Vector2(
           Math.sin(i * CURVE_FASTNESS) * WIDTH,
@@ -138,7 +122,6 @@ class Fish {
     fish.add(fishTail)
     fish.add(fishTailBottom)
 
-    fish.castShadow = true
 
     return fish
   }
