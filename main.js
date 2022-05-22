@@ -114,12 +114,9 @@
     scene.add(fishCenter[i])
   }
 
-  
-
   var t = 0
   var speed = 0.0000001
   var wiggleValue = 0
-
 
   const offset = -1.5707963267948966 // fishObject.rotation.y initial rotation
 
@@ -132,7 +129,6 @@
   const material = new THREE.MeshBasicMaterial()
 
   material.color = new THREE.Color(0xffff00)
-
 
   var spheres = []
 
@@ -208,8 +204,7 @@
     for (var i = 0; i < n; i++) {
       //every fish has velocity random
       speed = Math.random()* 0.000003
-      
-          
+                
       // set the marker position
       pt = swimPath[i].spline.getPoint(t)
       
@@ -217,12 +212,6 @@
       tangent = swimPath[i].spline.getTangent(t)
       t = t >= 1 ? 0 : t += speed
       
-      // Make sure x is negative at the very end of the path. Otherwise there is a frame where the fish is backwards
-      if (tangent.x > 0 && tangent.y < 0.06712 && tangent.y > 0.06710) {
-        tangent.x *= -1
-        tangent.z *= -1
-        tangent.y *= -1
-      }
       // if one fish is near ( absolute distance 50 for x and 30 for y) at one sphere, the fish look the sphere.
       for(var j=0; j<spheres.length;j++){
         if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[j].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[j].position.y))<30 ){
@@ -233,12 +222,10 @@
         
       }
 
-
       // if there are spheres on scene 
       if(spheres.length!=0){
         var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
         vector.unproject( camera );
-
 
         fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,pt.z))       
         
