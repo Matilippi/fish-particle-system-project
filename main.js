@@ -114,11 +114,11 @@
     scene.add(fishCenter[i])
   }
 
-  var t = 0
-  var speed = 0.0000001
+  var t = 0 //used for extract, in animate() function, the point and the tangent from the actual position of the spline curve. It must be [0,1]
+  var speed 
   var wiggleValue = 0
 
-  const offset = -1.5707963267948966 // fishObject.rotation.y initial rotation
+  const offset = -1.5707963267948966 // fishObject.rotation.y rotation
 
   var mouse = new THREE.Vector2(); 
 
@@ -155,6 +155,8 @@
   }     
 
   window.addEventListener('mousemove', onMouseMove, false)
+
+
   function onClick(event) {
 
     //the first click create a new sphere, the second stop the sphere
@@ -194,9 +196,8 @@
     }
     window.addEventListener('click', onClick, true)
 
-    var up = new THREE.Vector3(0, 1, 0) 
-    var axis = new THREE.Vector3()
-    var pt, axis, tangent
+    //used in animate() for management positions and movement of the spline curve
+    var pt, tangent
 
   function animate() {
     requestAnimationFrame(animate)
@@ -205,12 +206,18 @@
       //every fish has velocity random
       speed = Math.random()* 0.000003
                 
-      // set the marker position
+      // set the marker position, at point t
       pt = swimPath[i].spline.getPoint(t)
       
-      // get the tangent to the curve
+      // get the tangent to the curve, at point t
       tangent = swimPath[i].spline.getTangent(t)
-      t = t >= 1 ? 0 : t += speed
+
+      //the position of the curve incremented with the speed.
+      if(t>1) //t can't be >1 because the fish go backwards
+        t=0
+      else
+        t += speed  
+
       
       // if one fish is near ( absolute distance 50 for x and 30 for y) at one sphere, the fish look the sphere.
       for(var j=0; j<spheres.length;j++){
@@ -224,19 +231,18 @@
 
       // if there are spheres on scene 
       if(spheres.length!=0){
-        var vector = new THREE.Vector3(mouse.x, mouse.y, 0);
-        vector.unproject( camera );
 
+        //fishes continued to move following the Swimpath 
         fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,pt.z))       
         
         for(var j=0; j<spheres.length;j++){
           //if one fish is near ( absolute distance 50 for x and 30 for y) at one sphere, the fish look the sphere.
           if(Math.abs(Math.trunc(fishCenter[i].position.x)-Math.trunc(spheres[j].position.x))<50 && Math.abs(Math.trunc(fishCenter[i].position.y)-Math.trunc(spheres[j].position.y))<30 )
             fishCenter[i].lookAt(spheres[j].position)
-           //if a fish is in the same position (x,y) of the spher    
+           //if a fish is in the same position (x,y) of the sphere    
           if(Math.trunc(fishCenter[i].position.x)==Math.trunc(spheres[j].position.x) && Math.trunc(fishCenter[i].position.y)==Math.trunc(spheres[j].position.y)){              
               scene.remove(spheres[j])
-              //if the sphere eat by fish is the last insert
+              //if the sphere eat by fish is the last insert.
               if(j==(spheres.length-1)){
                 last=true;
                 click=0;
@@ -253,14 +259,13 @@
           } 
         }
       } else {
-        //fishes look everywhere
+        ////fishes continued to move following the Swimpath and fishes look everywhere
         fishCenter[i].position.copy(new THREE.Vector3(pt.x,pt.y,pt.z))
         fishCenter[i].lookAt(pt.add(new THREE.Vector3(tangent.x, tangent.y, tangent.z)))
       }
       
-      // calculate the axis to rotate around
-      axis.crossVectors(up, tangent).normalize()
-      fishObject[i].rotation.y = wiggleValue + offset
+      //to keep the fish aligned on the y-axis, the fish must be "standing"
+      fishObject[i].rotation.y = offset
    
     }
 
